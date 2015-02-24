@@ -57,7 +57,7 @@ find an exact label match on the other side of the expression get dropped from
 the result, while the others get carried over into a result vector with their
 original (left-hand-side) metric names and data values.
 
-# Logical/set binary operators
+## Logical/set binary operators
 
 These logical/set binary operators are only defined between instant vectors:
 
@@ -74,7 +74,7 @@ over from the left-hand-side vector.
 which don't have matching labelsets in `vector1`. The metric name is carried
 over from the left-hand-side vector in both cases.
 
-# Aggregation operators
+## Aggregation operators
 
 Prometheus supports the following built-in aggregation operators that can be
 used to aggregate the elements of a single instant vector, resulting in a new
