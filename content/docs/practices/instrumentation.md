@@ -213,9 +213,13 @@ observations. They track the number of observations *and* the sum of the
 observed values, allowing you to calculate the average observed value (useful
 for latency, for example). Note that the number of observations (showing up in
 Prometheus as a time series with a `_count` suffix) is inherently a counter (as
-described above, it only goes up), while the sum of observations (showing up as
-a time series with a `_sum` suffix) is inherently a gauge (if a negative value
-is observed, it goes down).
+described above, it only goes up). The sum of observations (showing up as a time
+series with a `_sum` suffix) behaves like a counter, too, as long as all
+observations are positive. Obviously, request durations or response sizes are
+always positive. In principle, however, summaries and histograms can be used to
+observe negative values (e.g. temperatures in centigrade). In that case, the sum
+of observations can go down, so you cannot apply `rate()` to it anymore, but you
+can still use it to calculate the average observation value.
 
 The essential difference is that summaries calculate streaming φ-quantiles on
 the client side and expose them, while histograms count observations in buckets
@@ -248,11 +252,13 @@ request duration as upper bound and another bucket with 4 times the request
 duration as upper bound. Example: The target request duration is 250ms. The
 tolerable request duration is 1s. The request duration are collected with a
 histogram called `http_request_duration_seconds`. The following expression
-yields the Apdex score:
+yields the Apdex score over the last 5 minutes:
 
 ```
 (
-  http_request_duration_seconds_bucket{le="0.25"} + http_request_duration_seconds_bucket{le="1"}
+  rate(http_request_duration_seconds_bucket{le="0.25"}[5m])
+    +
+  rate(http_request_duration_seconds_bucket{le="1"}[5m])
 ) / 2 / http_request_duration_seconds_count
 ```
 

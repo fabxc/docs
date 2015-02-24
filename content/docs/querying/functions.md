@@ -30,7 +30,7 @@ exist for a given metric name and label combination.
 
 ## `bottomk()`
 
-`bottomk(k integer, v instant-vector` returns the `k` smallest elements of `v`
+`bottomk(k integer, v instant-vector)` returns the `k` smallest elements of `v`
 by sample value.
 
 
@@ -109,7 +109,7 @@ histogram_quantile(0.9, rate(http_request_duration_seconds_bucket[10m]))
 
 The quantile is calculated for each label combination in
 `http_request_duration_seconds`. To aggregate, use the `sum()` aggregator
-outside of the `rate()` function. Since the `le` label is required by
+around the `rate()` function. Since the `le` label is required by
 `histogram_quantile()`, it has to be included in the `by` clause. The following
 expression aggregates quantiles by `job`:
 
